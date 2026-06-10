@@ -1,0 +1,52 @@
+.app {
+    height: 100dvh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#question {
+    font-size: 30px;
+    width: 250;
+    text-align: center;
+}
+
+#answer {
+    font-size: 24px;
+    width: 300px;
+    text-align: center;
+    height: 40px;
+}
+
+#backBtn {
+    border-radius: 999px;
+    padding: 8px 8px 8px 8px;
+    font-size: 18px;
+    margin-right: 24px;
+}
+
+#nextBtn {
+    border-radius: 999px;
+    padding: 8px 8px 8px 8px;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+#displayColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.correct {
+    color: green;
+    font-weight: bold;
+}
+
+.wrong {
+    color: red;
+    font-weight: bold;
+}
