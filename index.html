@@ -14,6 +14,8 @@
         <main>
             <div id="displayColumn">
 
+                <!-- <button id="modeBtn">Random</button> -->
+
                 <p id="question">
                     <span id="firstWord">What's</span>
                     <span id="secondWord">after</span>
@@ -23,8 +25,12 @@
                 <input
                 type="text"
                 id="answer"
+                list="booksList"
                 name="answer"
-                placeholder="Answer goes here!">
+                placeholder="It is..">
+                <datalist
+                id="booksList"
+                ></datalist>
 
                 <button id="nextBtn">Check</button>
             </div>

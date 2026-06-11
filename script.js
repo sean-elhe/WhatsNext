@@ -2,7 +2,7 @@ let globalData = null;
 let bookName = "Genesis";
 let bookNameDisplay = "Genesis"
 let currentIndex = 0;
-let randomIndex = Math.floor(Math.random() * 65);
+let randomIndex = 0;
 let rightCount = 0;
 let wrongCount = 0;
 let stage = 1;
@@ -12,17 +12,18 @@ const answer = document.getElementById("answer");
 
 answer.addEventListener('keydown', (event) => {
     if (event.key === "Enter") {
-        displayQuestion();
+        nextBook();
     }
 });
 
 const question = document.getElementById("question")
-const firstWord = document.getElementById("firstWord")
 const secondWord = document.getElementById("secondWord")
 const thirdWord = document.getElementById("thirdWord")
 
 const nextBtn = document.getElementById("nextBtn")
 const score = document.getElementById("score")
+const booksList = document.getElementById("booksList")
+
 
 fetch('data.json')
     .then(response => response.json())
@@ -30,12 +31,26 @@ fetch('data.json')
         globalData = data
 
         number = Math.floor(Math.random() * 100);
-        displayQuestion();
+        randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
+        displayQuestionRandom();
+
+        booksList.innerHTML = "";
+
+        data.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.book_name;
+            booksList.appendChild(option);
+        })
     });
 
-async function displayQuestion() {
-    let books = globalData;
+function displayQuestionRandom() {
+    const books = globalData;
     bookName = books[randomIndex].book_name;
+
+    console.log("Stage:", stage)
+    answer.classList.remove("correct", "wrong")
+    answer.value = "";
+    nextBtn.textContent = "Check"
 
     if (number > 50) {
         console.log("Number is over 50: What's after?")
@@ -46,7 +61,6 @@ async function displayQuestion() {
         secondWord.classList.remove("wrong")
         secondWord.classList.add("correct")
         secondWord.textContent = "after"
-        checkAnswer();
     } else {
         console.log("Number is 50 or less: What's before?")
         bookNameDisplay = books[randomIndex + 1].book_name;
@@ -55,87 +69,55 @@ async function displayQuestion() {
         secondWord.classList.remove("correct")
         secondWord.classList.add("wrong")
         secondWord.textContent = "before"
-        checkAnswer();
     }
 
     console.log("Current index: ", currentIndex)
 
 }
 
-async function checkAnswer(){
-    let userText = answer.value;
-    
-    if (stage === 1 && currentIndex != 0) {
-        console.log(stage)
-            if (userText.toLowerCase() === bookName.toLowerCase()) {
-                rightCount++
-                answer.classList.add("correct")
-            } else {
-                wrongCount++
-                answer.classList.add("wrong")
-            }
-        answer.value = bookName
-        stage = 2
-        nextBtn.textContent = `[${rightCount} / ${currentIndex}]`;
-        currentIndex++;
-        randomIndex = Math.floor(Math.random() * 65);
-        number = Math.floor(Math.random() * 100);
-    } else {
-        console.log("Stage:", stage)
-        answer.classList.remove("correct", "wrong")
-        answer.value = "";
-
-        stage = 1
-        nextBtn.textContent = "Check"
-    }
-
-    if (currentIndex === 0 ) {
-        currentIndex++;
-    }
+function displayQuestionOrdered() {
 
 }
 
-async function nextBook() {
-    displayQuestion();
+function displayQuestionReverse(){
+
+}
+
+function checkAnswer(){
+    let userText = answer.value;
+
+    if (userText.trim().toLowerCase()
+         === bookName.toLowerCase()) {
+        rightCount++
+        answer.classList.add("correct")
+    } else {
+        wrongCount++
+        answer.classList.add("wrong")
+    }
+
+    answer.value = bookName
+    nextBtn.textContent = `[${rightCount} /
+        ${rightCount + wrongCount}]`;
+    currentIndex++;
+    randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
+    number = Math.floor(Math.random() * 100);
+
+}
+
+function nextBook() {
+    if (stage === 1) {
+        checkAnswer();
+        stage = 2
+    } else {
+        displayQuestionRandom();
+        stage = 1
+    }
 };
 
 document.getElementById("nextBtn").addEventListener('click', () => {
     nextBook();
 });
 
-// async function checkAnswerPrevious(){
-//     let userText = answer.value;
-
-//     if (stage === 1 && currentIndex != 0) {
-//         console.log(stage)
-//             if (userText.toLowerCase() === bookName.toLowerCase()) {
-//                 rightCount++
-//                 answer.classList.add("correct")
-//             } else {
-//                 wrongCount++
-//                 answer.classList.add("wrong")
-//             }
-//         answer.value = bookName
-//         stage = 2
-//         nextBtn.textContent = `[${rightCount} / ${currentIndex}]`;
-//         currentIndex++;
-//         randomIndex = Math.floor(Math.random() * 65);
-//             number = Math.floor(Math.random() * 100);
-
-
-//     } else {
-//         console.log(stage)
-//         answer.classList.remove("correct", "wrong")
-//         answer.value = "";
-
-//         stage = 1
-//         nextBtn.textContent = "Check"
-//     }
-
-//     if (currentIndex === 0 ) {
-//         currentIndex++;
-//     }
-// }
 
 
 // // async function checkAnswer(){
