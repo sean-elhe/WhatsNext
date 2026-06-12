@@ -174,6 +174,8 @@ function resetScore() {
     currentIndex = 1;
     rightCount = 0;
     wrongCount = 0;
+    number = Math.floor(Math.random() * 100);
+    randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
     answer.classList.remove("correct", "wrong")
     scoreBtn.textContent = "---"
 }
