@@ -7,6 +7,7 @@ let rightCount = 0;
 let wrongCount = 0;
 let stage = 1;
 let number = 0;
+let mode = "Ordered"
 
 const answer = document.getElementById("answer");
 
@@ -21,8 +22,10 @@ const secondWord = document.getElementById("secondWord")
 const thirdWord = document.getElementById("thirdWord")
 
 const nextBtn = document.getElementById("nextBtn")
-const score = document.getElementById("score")
+const scoreBtn = document.getElementById("scoreBtn")
 const booksList = document.getElementById("booksList")
+
+const modeBtn = document.getElementById("modeBtn")
 
 
 fetch('data.json')
@@ -30,9 +33,17 @@ fetch('data.json')
     .then(data => {
         globalData = data
 
-        number = Math.floor(Math.random() * 100);
-        randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
-        displayQuestionRandom();
+        if (mode === "Ordered") {
+            currentIndex = 1;
+            displayQuestionOrdered();
+        } else if (mode === "Reverse") {
+            currentIndex = 1;
+            displayQuestionReverse();
+        } else {
+            number = Math.floor(Math.random() * 100);
+            randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
+            displayQuestionRandom();
+        }
 
         booksList.innerHTML = "";
 
@@ -76,10 +87,41 @@ function displayQuestionRandom() {
 }
 
 function displayQuestionOrdered() {
+    const books = globalData;
+    bookName = books[currentIndex].book_name;
 
+    console.log("Stage:", stage)
+    secondWord.classList.add("correct")
+    answer.value = "";
+    nextBtn.textContent = "Check"
+
+    bookNameDisplay = books[currentIndex - 1].book_name;
+    thirdWord.textContent = `${bookNameDisplay}?`;
+    secondWord.textContent = "after"
+
+
+    console.log("Current index: ", currentIndex)
 }
 
-function displayQuestionReverse(){
+function displayQuestionReverse() {
+
+
+    const books = globalData;
+    bookName = books
+        [(currentIndex - 3 + books.length) % books.length].book_name;
+
+    console.log("Stage:", stage)
+    answer.classList.remove("correct", "wrong")
+    answer.value = "";
+    secondWord.classList.add("wrong")
+    nextBtn.textContent = "Check"
+
+    bookNameDisplay = books
+        [(currentIndex - 2 + books.length) % books.length].book_name;
+    thirdWord.textContent = `${bookNameDisplay}?`;
+    secondWord.textContent = "before"
+
+    console.log("Current index: ", currentIndex)
 
 }
 
@@ -96,12 +138,18 @@ function checkAnswer(){
     }
 
     answer.value = bookName
-    nextBtn.textContent = `[${rightCount} /
-        ${rightCount + wrongCount}]`;
-    currentIndex++;
-    randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
-    number = Math.floor(Math.random() * 100);
-
+    scoreBtn.textContent = `${rightCount}/
+        ${rightCount + wrongCount}`;
+    nextBtn.textContent = "Next"
+    
+    if (mode === "Ordered") {
+        currentIndex++;
+    } else if (mode === "Reverse") {
+        currentIndex--;
+    } else {
+        randomIndex = Math.floor(Math.random() * (globalData.length - 2)) + 1;
+        number = Math.floor(Math.random() * 100);
+    }
 }
 
 function nextBook() {
@@ -109,54 +157,46 @@ function nextBook() {
         checkAnswer();
         stage = 2
     } else {
-        displayQuestionRandom();
-        stage = 1
+        if (mode === "Ordered") {
+            displayQuestionOrdered();
+            stage = 1
+        } else if (mode === "Reverse") {
+            displayQuestionReverse();
+            stage = 1
+        } else {
+            displayQuestionRandom();
+            stage = 1
+        }
     }
 };
+
+function resetScore() {
+    currentIndex = 1;
+    rightCount = 0;
+    wrongCount = 0;
+    answer.classList.remove("correct", "wrong")
+    scoreBtn.textContent = "---"
+}
 
 document.getElementById("nextBtn").addEventListener('click', () => {
     nextBook();
 });
 
-
-
-// // async function checkAnswer(){
-// //     let books = globalData;
-// //     let bookName = books[currentIndex].book_name;
-// //     let bookNameAlt = books[currentIndex].book_name;
-
-// //     let userText = answer.value;
-
-
-// //     if (stage === 1) {
-// //         console.log(stage)
-// //             if (userText === bookName) {
-// //                 rightCount++
-// //                 answer.classList.add("correct")
-// //             } else {
-// //                 wrongCount++
-// //                 answer.classList.add("wrong")
-// //             }
-// //         answer.value = bookName;
-
-// //         stage = 2
-// //         nextBtn.textContent = "Next";
-// //         currentIndex++
-
-// //     } else {
-// //         console.log(stage)
-// //         answer.value = "";
-// //         question.textContent =
-// //         "What's after " + bookNameAlt + "?"
-
-// //         stage = 1
-// //         nextBtn.textContent = "Check"
-
-// //     }
-
-
-    
-// //     console.log(`${rightCount}/${wrongCount} `)
-// //     // console.log(userText)
-// //     // console.log(bookName)
-// // }
+document.getElementById("modeBtn").addEventListener("click", () => {
+    if (mode === "Ordered") {
+        mode = "Reverse"
+        modeBtn.textContent = "Reverse"
+        resetScore();
+        displayQuestionReverse();
+    } else if (mode === "Reverse") {
+        mode = "Random"
+        modeBtn.textContent = "Random"
+        resetScore();
+        displayQuestionRandom();
+    } else {
+        mode = "Ordered"
+        modeBtn.textContent = "Ordered"
+        resetScore();
+        displayQuestionOrdered();
+    }
+})

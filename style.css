@@ -7,8 +7,13 @@
     justify-content: center;
 }
 
+#answer::-webkit-calendar-picker-indicator {
+    display: none !important;
+}
+
+
 #question {
-    font-size: 30px;
+    font-size: 36px;
     width: 300px;
     text-align: center;
 }
@@ -18,13 +23,6 @@
     width: 300px;
     text-align: center;
     height: 40px;
-}
-
-#modeBtn {
-    border-radius: 999px;
-    padding: 8px 8px 8px 8px;
-    font-size: 18px;
-    margin-top: 20px;
 }
 
 #nextBtn {
@@ -50,4 +48,27 @@
 .wrong {
     color: red;
     font-weight: bold;
+}
+
+#topRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}
+
+#modeBtn {
+    border-radius: 999px;
+    padding: 8px 8px 8px 8px;
+    font-size: 18px;
+    margin-top: 20px;
+    width: 100px;
+}
+
+#scoreBtn {
+    border-radius: 999px;
+    padding: 8px 8px 8px 8px;
+    font-size: 18px;
+    margin-top: 20px;
+    width: 100px;
 }
